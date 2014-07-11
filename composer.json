@@ -19,5 +19,4 @@
     "autoload": {
         "psr-4": { "Grubie\\Libs\\": "src" }
     },
-    "target-dir": "Grubie/Libs"
 }
