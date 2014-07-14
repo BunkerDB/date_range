@@ -1,7 +1,7 @@
 <?php
 namespace Grubie\Libs;
 
-use \DateTimeImmutable;
+use \DateTime;
 use \BadFunctionCallException;
 use \DatePeriod;
 use \DateInterval;
@@ -12,8 +12,8 @@ class DateRange
     protected $end_date;
 
     /**
-     * @param  string|DateTimeImmutable $start_date
-     * @param  string|DateTimeImmutable $end_date
+     * @param  string|DateTime $start_date
+     * @param  string|DateTime $end_date
      * @returns DateRange
      * @throws BadFunctionCallException
      */
@@ -23,12 +23,12 @@ class DateRange
             throw new BadFunctionCallException('start_date should be lower than end_date ');
         }
         if (is_string($start_date)) {
-            $this->start_date = new DateTimeImmutable($start_date);
+            $this->start_date = new DateTime($start_date);
         } else {
             $this->start_date = $start_date;
         }
         if (is_string($end_date)) {
-            $this->end_date = new DateTimeImmutable($end_date);
+            $this->end_date = new DateTime($end_date);
         } else
             $this->end_date = $end_date;
 
@@ -41,19 +41,19 @@ class DateRange
     }
 
     /**
-     * @return DateTimeImmutable
+     * @return DateTime
      */
     public function getStart()
     {
-        return $this->start_date;
+        return clone $this->start_date;
     }
 
     /**
-     * @return DateTimeImmutable
+     * @return DateTime
      */
     public function getEnd()
     {
-        return $this->end_date;
+        return clone $this->end_date;
     }
 
     /**
