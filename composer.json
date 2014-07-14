@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-0": {
-            "DateRange": "./src"
+            "Grubie\\Libs\\DateRange": "./src"
         },
         "psr-4": {
             "Grubie\\Libs\\": "src"
