@@ -18,10 +18,9 @@ class DateRange
      * @throws BadFunctionCallException
      */
 
-    public function __construct($start_date, $end_date)
-    {
+    public function __construct($start_date, $end_date){
         if ($start_date > $end_date) {
-            throw new BadFunctionCallException('start_date should be lower than end_date');
+            throw new BadFunctionCallException('start_date should be lower than end_date ');
         }
         if (is_string($start_date)) {
             $this->start_date = new DateTimeImmutable($start_date);
@@ -30,16 +29,15 @@ class DateRange
         }
         if (is_string($end_date)) {
             $this->end_date = new DateTimeImmutable($end_date);
-        } else {
+        } else
             $this->end_date = $end_date;
-        }
 
         return $this;
     }
 
     public function __toString()
     {
-        return $this->start_date->format('Y-m-d') . '<->' . $this->end_date->format('Y-m-d');
+        return $this->start_date->format('Y-m-d') . '|' . $this->end_date->format('Y-m-d');
     }
 
     /**
@@ -60,7 +58,7 @@ class DateRange
 
     /**
      * Converts the DateRange to a DatePeriod defined by $interval, defaults to 1 day
-     * @param  string     $interval
+     * @param  string $interval
      * @return DatePeriod
      */
     public function asPeriod($interval = 'P1D')
@@ -97,8 +95,8 @@ class DateRange
 
     /**
      * Intersect a DateRange with another DateRange, returns a DateRange or NULL
-     * @param  DateRange      $left
-     * @param  DateRange      $right
+     * @param  DateRange $left
+     * @param  DateRange $right
      * @return DateRange|null
      */
     public static function intersect(DateRange $left, DateRange $right)
@@ -134,8 +132,8 @@ class DateRange
 
     /**
      * Joins a DateRange with another DateRange, returns either DateRange or NULL if no join is possible
-     * @param  DateRange      $left
-     * @param  DateRange      $right
+     * @param  DateRange $left
+     * @param  DateRange $right
      * @return DateRange|null
      */
     public static function join(DateRange $left, DateRange $right)
@@ -174,17 +172,17 @@ class DateRange
             and $subtrahend->getStart() <= $minuend->getEnd()
             and $subtrahend->getEnd() >= $minuend->getEnd()
         ) {
-            return [new DateRange($minuend->getStart(), $subtrahend->getStart()->modify('-1 day'))];
+            return array(new DateRange($minuend->getStart(), $subtrahend->getStart()->modify('-1 day')));
         } elseif ($subtrahend->getEnd() >= $minuend->getStart()
             and $subtrahend->getStart() <= $minuend->getStart()
             and $subtrahend->getEnd() >= $minuend->getStart()
         ) {
-            return [new DateRange($subtrahend->getEnd()->modify('+1 day'), $minuend->getEnd())];
+            return array(new DateRange($subtrahend->getEnd()->modify('+1 day'), $minuend->getEnd()));
         } else {
-            return [
+            return array(
                 new DateRange($minuend->getStart(), $subtrahend->getStart()->modify('-1 day')),
                 new DateRange($subtrahend->getEnd()->modify('+1 day'), $minuend->getEnd())
-            ];
+            );
         }
     }
 
