@@ -8,29 +8,44 @@ use \DateInterval;
 
 class DateRange
 {
+    /**
+     * @var \DateTime
+     */
     protected $start_date;
+
+    /**
+     * @var \DateTime
+     */
     protected $end_date;
 
     /**
-     * @param  string|DateTime $start_date
-     * @param  string|DateTime $end_date
+     * @param  integer|string|DateTime  $start_date
+     * @param  integer|string|DateTime  $end_date
      * @returns DateRange
      * @throws BadFunctionCallException
      */
 
-    public function __construct($start_date, $end_date){
-        if ($start_date > $end_date) {
-            throw new BadFunctionCallException('start_date should be lower than end_date ');
-        }
+    public function __construct($start_date, $end_date)
+    {
+
         if (is_string($start_date)) {
             $this->start_date = new DateTime($start_date);
+        } elseif (is_integer($start_date)) {
+            $this->start_date = DateTime::createFromFormat('U', $start_date);
         } else {
             $this->start_date = $start_date;
         }
         if (is_string($end_date)) {
             $this->end_date = new DateTime($end_date);
-        } else
+        } elseif (is_integer($end_date)) {
+            $this->end_date = DateTime::createFromFormat('U', $end_date);
+        } else {
             $this->end_date = $end_date;
+        }
+
+        if ($this->start_date > $this->end_date) {
+            throw new BadFunctionCallException('start_date should be lower than end_date ');
+        }
 
         return $this;
     }
@@ -58,7 +73,7 @@ class DateRange
 
     /**
      * Converts the DateRange to a DatePeriod defined by $interval, defaults to 1 day
-     * @param  string $interval
+     * @param  string     $interval
      * @return DatePeriod
      */
     public function asPeriod($interval = 'P1D')
@@ -95,8 +110,8 @@ class DateRange
 
     /**
      * Intersect a DateRange with another DateRange, returns a DateRange or NULL
-     * @param  DateRange $left
-     * @param  DateRange $right
+     * @param  DateRange      $left
+     * @param  DateRange      $right
      * @return DateRange|null
      */
     public static function intersect(DateRange $left, DateRange $right)
@@ -132,8 +147,8 @@ class DateRange
 
     /**
      * Joins a DateRange with another DateRange, returns either DateRange or NULL if no join is possible
-     * @param  DateRange $left
-     * @param  DateRange $right
+     * @param  DateRange      $left
+     * @param  DateRange      $right
      * @return DateRange|null
      */
     public static function join(DateRange $left, DateRange $right)
