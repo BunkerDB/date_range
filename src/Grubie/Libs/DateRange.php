@@ -1,10 +1,10 @@
 <?php
 namespace Grubie\Libs;
 
-use \DateTime;
-use \BadFunctionCallException;
-use \DatePeriod;
-use \DateInterval;
+use DateTime;
+use BadFunctionCallException;
+use DatePeriod;
+use DateInterval;
 
 class DateRange
 {
@@ -27,7 +27,6 @@ class DateRange
 
     public function __construct($start_date, $end_date)
     {
-
         if (is_string($start_date)) {
             $this->start_date = new DateTime($start_date);
         } elseif (is_integer($start_date)) {
@@ -44,7 +43,8 @@ class DateRange
         }
 
         if ($this->start_date > $this->end_date) {
-            throw new BadFunctionCallException('start_date should be lower than end_date ');
+            throw new BadFunctionCallException(
+                'start_date should be lower or equal to end_date, '.$this->__toString().' provided');
         }
 
         return $this;
@@ -52,7 +52,7 @@ class DateRange
 
     public function __toString()
     {
-        return $this->start_date->format('Y-m-d') . '|' . $this->end_date->format('Y-m-d');
+        return $this->getIsoStart().'|'.$this->getIsoEnd();
     }
 
     /**
@@ -69,6 +69,24 @@ class DateRange
     public function getEnd()
     {
         return clone $this->end_date;
+    }
+
+    /**
+     * Returns ISO 8601 start date formatted text
+     * @return string
+     */
+    public function getIsoStart()
+    {
+        return $this->start_date->format('Y-m-d');
+    }
+
+    /**
+     * Returns ISO 8601 end date formatted text
+     * @return string
+     */
+    public function getIsoEnd()
+    {
+        return $this->end_date->format('Y-m-d');
     }
 
     /**
@@ -122,7 +140,7 @@ class DateRange
         }
 
         if ($left->getEnd() < $right->getStart() or $left->getStart() > $right->getEnd()) {
-            return null;
+            return;
         } else {
             if ($left->getStart() >= $right->getStart() and $left->getEnd() <= $right->getEnd()) {
                 return $left;
@@ -151,7 +169,7 @@ class DateRange
      * @param  DateRange      $right
      * @return DateRange|null
      */
-    public static function join(DateRange $left, DateRange $right)
+    public static function implode(DateRange $left, DateRange $right)
     {
         // Swap left and right to get the starter one first.
         if ($left->getStart() > $right->getStart()) {
@@ -166,15 +184,15 @@ class DateRange
             return new DateRange($left->getStart(), $left->getEnd());
         }
 
-        return null;
+        return;
     }
 
     /**
      * Subtract from the first DateRange another DateRange and returns an array with the outcome
      * The outcome can be either an empty array, a single DateRange or two DateRanges
-     * @param  DateRange $minuend
-     * @param  DateRange $subtrahend
-     * @return array
+     * @param  DateRange   $minuend
+     * @param  DateRange   $subtrahend
+     * @return DateRange[]
      */
     public static function subtract(DateRange $minuend, DateRange $subtrahend)
     {
@@ -196,15 +214,15 @@ class DateRange
         } else {
             return array(
                 new DateRange($minuend->getStart(), $subtrahend->getStart()->modify('-1 day')),
-                new DateRange($subtrahend->getEnd()->modify('+1 day'), $minuend->getEnd())
+                new DateRange($subtrahend->getEnd()->modify('+1 day'), $minuend->getEnd()),
             );
         }
     }
 
     /**
      * Joins DateRanges if they overlap on some point.
-     * @param  array $ranges
-     * @return array
+     * @param  DateRange[] $ranges
+     * @return DateRange[]
      */
     public static function joinRanges(Array $ranges)
     {
@@ -229,9 +247,10 @@ class DateRange
     }
 
     /**
-     * @param  array $left_ranges
-     * @param  array $right_ranges
-     * @return array
+     * Intersects two array of ranges, the result is a new array of ranges
+     * @param  DateRange[] $left_ranges
+     * @param  DateRange[] $right_ranges
+     * @return DateRange[]
      */
     public static function intersectRanges(Array $left_ranges, Array $right_ranges)
     {
@@ -246,9 +265,9 @@ class DateRange
     }
 
     /**
-     * Auxiliar function to cleanup null values, restore index and sort results
-     * @param  array $arr
-     * @return array
+     * Auxiliary function to cleanup null values, restore index and sort results
+     * @param  DateRange[] $arr
+     * @return DateRange[]
      */
     public static function cleanupSort(Array $arr)
     {
@@ -259,12 +278,41 @@ class DateRange
     }
 
     /**
-     * Returns if a DateTime object is within the current range
-     * @param  DateTime $date
-     * @return bool
+     * Returns an array of ranges from an array of dates (strings for the moment)
+     * @param  array       $arr
+     * @return DateRange[]
      */
-    public function includes(DateTime $date)
+    public static function extractRanges(Array $arr)
     {
-        return ($date >= $this->start_date && $date <= $this->end_date);
+        $ranges = array();
+        if (!empty($arr)) {
+            $end = $prev = null;
+            $start = $arr[0];
+
+            foreach ($arr as $date) {
+                if (isset($prev) and date('Y-m-d', strtotime($date." - 1 day")) != $prev) {
+                    $end = $prev;
+                }
+
+                if (isset($start) and isset($end)) {
+                    $ranges[] = new DateRange($start, $end);
+                    $start = $date;
+                    $end = null;
+                    $prev = null;
+                } else {
+                    $prev = $date;
+                }
+            }
+
+            if (isset($prev)) {
+                $ranges[] = new DateRange($start, $prev);
+            } else {
+                if (isset($start)) {
+                    $ranges[] = new DateRange($start, $start);
+                }
+            }
+        }
+
+        return $ranges;
     }
 }
