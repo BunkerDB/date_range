@@ -123,6 +123,16 @@ class DateRange
     }
 
     /**
+     * Returns if a DateTime object is within the current range
+     * @param  DateTime $date
+     * @return bool
+     */
+    public function includes(DateTime $date)
+    {
+        return ($date >= $this->start_date && $date <= $this->end_date);
+    }
+
+    /**
      * Static methods
      */
 
