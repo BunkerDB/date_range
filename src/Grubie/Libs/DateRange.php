@@ -208,7 +208,7 @@ class DateRange
     {
         if ($minuend->getEnd() < $subtrahend->getStart() or
             $minuend->getStart() > $subtrahend->getEnd() or
-            ($minuend->getStart() == $subtrahend->getStart() and $minuend->getEnd() == $subtrahend->getEnd())
+            ($minuend->getStart() >= $subtrahend->getStart() and $minuend->getEnd() <= $subtrahend->getEnd())
         ) {
             return array();
         } elseif ($subtrahend->getStart() > $minuend->getStart()
