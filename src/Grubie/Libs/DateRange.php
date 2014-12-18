@@ -179,7 +179,7 @@ class DateRange
      * @param  DateRange      $right
      * @return DateRange|null
      */
-    public static function implode(DateRange $left, DateRange $right)
+    public static function join(DateRange $left, DateRange $right)
     {
         // Swap left and right to get the starter one first.
         if ($left->getStart() > $right->getStart()) {
