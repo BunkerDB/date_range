@@ -1,15 +1,15 @@
 {
-    "name": "grubie/date_range",
+    "name": "bunkerdb/date_range",
     "type": "library",
     "description": "Helps handling ranges of dates with PHP 5.3",
     "keywords": ["date","range","interval"],
-    "homepage": "http://github.com/Amephist/date_range",
+    "homepage": "http://github.com/BunkerDB/date_range",
     "license": "MIT",
     "authors": [
         {
-            "name": "Andrés Iribarren",
-            "email": "amephist@gmail.com",
-            "homepage": "http://grubie.com",
+            "name": "BunkerDB",
+            "email": "support@bunkerdb.com",
+            "homepage": "http://bunkerdb.com",
             "role": "Developer"
         }
     ],
