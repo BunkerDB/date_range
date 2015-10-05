@@ -99,7 +99,7 @@ class DateRange
         return new DatePeriod(
             $this->start_date,
             new DateInterval($interval),
-            $this->end_date->modify('+1 day')
+            $this->getEnd()->modify('+1 day')
         );
     }
 
