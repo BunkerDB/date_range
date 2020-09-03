@@ -90,6 +90,24 @@ class DateRange
     }
 
     /**
+     * Returns ISO 8601 start datetime formatted text
+     * @return string
+     */
+    public function getIsoStartTime()
+    {
+        return $this->start_date->format('Y-m-d 00:00:00');
+    }
+
+    /**
+     * Returns ISO 8601 end datetime formatted text
+     * @return string
+     */
+    public function getIsoEndTime()
+    {
+        return $this->end_date->format('Y-m-d 23:59:59');
+    }
+
+    /**
      * Converts the DateRange to a DatePeriod defined by $interval, defaults to 1 day
      * @param  string     $interval
      * @return DatePeriod
